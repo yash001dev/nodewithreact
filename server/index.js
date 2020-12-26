@@ -36,6 +36,22 @@ app.post("/api/insert",(req,res)=>{
     })
 });
 
+app.delete('/api/delete/:movieName',(req,res)=>{
+    const movieName=req.params.movieName;
+    const sqlDelete="DELETE FROM movie_reviews WHERE movieName=?";
+    db.query(sqlDelete,movieName,(err,result)=>{
+        if(err) console.log(err);
+    })
+})
+
+app.put('/api/update',(req,res)=>{
+    const review=req.body.movieReview
+    const name=req.body.movieName;
+    const sqlUpdate='UPDATE SET movie_reviews movieReview=? WHERE movieName=?'
+    db.query(sqlUpdate,[review,name],(err,result)=>{
+
+    })
+})
 
 // For DEMO Purpose.
 // app.get('/',(req,res)=>{
