@@ -111,7 +111,94 @@ app.use(bodyParser.urlencoded({extended:true}));
     //     })
     // })
 
+//Chemist CRUD
 
+    //Get Operation
+    app.get('/api/chemist/get',(req,res)=>{
+        const sqlSelect=
+        "SELECT * FROM chemist";
+    
+        db.query(sqlSelect,(err,result)=>{
+            res.send(result);
+        })
+    })
+
+    //Post Operation
+    app.post("/api/chemist/insert",(req,res)=>{
+        console.log(req.body);
+        const name=req.body.name;
+        const shop_name=req.body.shop_name;
+        const email=req.body.email;
+        const number=req.body.number;
+        const area=req.body.area;
+        const city=req.body.city;
+        
+
+        const sqlInsert="INSERT INTO chemist(shop_name,name,email,number,area,city) VALUES (?,?,?,?,?,?)"
+        db.query(sqlInsert,[shop_name,name,email,number,area,city],(err,result)=>{
+           res.send(result);
+        })
+    });
+    
+    //Delete Operation
+    app.delete("/api/doctor/delete/:chemistID",(req,res)=>{
+        const chemistID=req.params.chemistID;
+        const sqlDelete="DELETE FROM chemist where id=?";
+        db.query(sqlDelete,chemistID,(err,result)=>{
+            if(err) console.log(err);
+        })
+    })
+
+    //Update Operation
+    // app.put('/api/doctor/update',(req,res)=>{
+    //     const review=req.body.movieReview
+    //     const name=req.body.movieName;
+    //     const sqlUpdate='UPDATE SET movie_reviews movieReview=? WHERE movieName=?'
+    //     db.query(sqlUpdate,[review,name],(err,result)=>{
+    
+    //     })
+    // })
+
+
+//Mr CRUD
+    //Get Operation
+    app.get('/api/mr/get',(req,res)=>{
+        const sqlSelect=
+        "SELECT * FROM mr";
+    
+        db.query(sqlSelect,(err,result)=>{
+            res.send(result);
+        })
+    })
+
+    //Post Operation
+    app.post("/api/mr/insert",(req,res)=>{
+        console.log(req.body);
+        const name=req.body.name;
+        const email=req.body.email;
+        const number=req.body.number;
+        const area=req.body.area;
+        const city=req.body.city;
+        const doctor_id=req.body.doctor_id;
+        const chemist_id=req.body.chemist_id;
+        
+
+        const sqlInsert="INSERT INTO chemist(name,email,number,area,city,doctor_id,chemist_id) VALUES (?,?,?,?,?,?)"
+        db.query(sqlInsert,[shop_name,name,email,number,area,city,doctor_id,chemist_id],(err,result)=>{
+           res.send(result);
+        })
+    });
+    
+    //Delete Operation
+    app.delete("/api/mr/delete/:mrID",(req,res)=>{
+        const mrID=req.params.mrID;
+        const sqlDelete="DELETE FROM chemist where id=?";
+        db.query(sqlDelete,mrID,(err,result)=>{
+            if(err) console.log(err);
+        })
+    })
+
+    
 
 
 
