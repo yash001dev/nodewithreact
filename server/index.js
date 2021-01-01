@@ -72,6 +72,8 @@ app.use(bodyParser.urlencoded({extended:true}));
         const sqlSelect=
         "SELECT * FROM doctor";
     
+
+
         db.query(sqlSelect,(err,result)=>{
             res.send(result);
         })
@@ -79,6 +81,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
     //Post Operation
     app.post("/api/doctor/insert",(req,res)=>{
+        
         console.log(req.body);
         const name=req.body.name;
         const email=req.body.email;
@@ -95,6 +98,8 @@ app.use(bodyParser.urlencoded({extended:true}));
     //Delete Operation
     app.delete("/api/doctor/delete/:doctorID",(req,res)=>{
         const doctorID=req.params.doctorID;
+        console.log("delete is called...");
+        console.log(doctorID);
         const sqlDelete="DELETE FROM doctor where id=?";
         db.query(sqlDelete,doctorID,(err,result)=>{
             if(err) console.log(err);
@@ -117,14 +122,16 @@ app.use(bodyParser.urlencoded({extended:true}));
     app.get('/api/chemist/get',(req,res)=>{
         const sqlSelect=
         "SELECT * FROM chemist";
-    
+        console.log("chemist select is called...");
         db.query(sqlSelect,(err,result)=>{
+            console.log("result:",result);
             res.send(result);
         })
     })
 
     //Post Operation
     app.post("/api/chemist/insert",(req,res)=>{
+        console.log("BODY:");
         console.log(req.body);
         const name=req.body.name;
         const shop_name=req.body.shop_name;
@@ -136,28 +143,40 @@ app.use(bodyParser.urlencoded({extended:true}));
 
         const sqlInsert="INSERT INTO chemist(shop_name,name,email,number,area,city) VALUES (?,?,?,?,?,?)"
         db.query(sqlInsert,[shop_name,name,email,number,area,city],(err,result)=>{
-           res.send(result);
+           if(err) console.log(err.message);
         })
     });
     
     //Delete Operation
-    app.delete("/api/doctor/delete/:chemistID",(req,res)=>{
+    app.delete("/api/chemist/delete/:chemistID",(req,res)=>{
         const chemistID=req.params.chemistID;
+        console.log("delete is called...");
+        console.log(chemistID.toString());
         const sqlDelete="DELETE FROM chemist where id=?";
         db.query(sqlDelete,chemistID,(err,result)=>{
             if(err) console.log(err);
         })
     })
 
-    //Update Operation
-    // app.put('/api/doctor/update',(req,res)=>{
-    //     const review=req.body.movieReview
-    //     const name=req.body.movieName;
-    //     const sqlUpdate='UPDATE SET movie_reviews movieReview=? WHERE movieName=?'
-    //     db.query(sqlUpdate,[review,name],(err,result)=>{
-    
-    //     })
-    // })
+    // Update Operation
+    app.put('/api/chemist/update',(req,res)=>{
+        
+        console.log(req.body);
+        const id=req.body.id;
+        const name=req.body.name;
+        const shop_name=req.body.shop_name;
+        const email=req.body.email;
+        const number=Number(req.body.number);
+        console.log("Number:",number);
+        const area=req.body.area;
+        const city=req.body.city;
+        
+        const sqlUpdate='UPDATE chemist SET name=?,shop_name=?,email=?,number=?,area=?,city=? WHERE id=?'
+        db.query(sqlUpdate,[name,shop_name,
+        email,number,area,city,id],(err,result)=>{
+            if(err) console.log(err.message);
+        })
+    })
 
 
 //Mr CRUD
@@ -176,16 +195,16 @@ app.use(bodyParser.urlencoded({extended:true}));
         console.log(req.body);
         const name=req.body.name;
         const email=req.body.email;
-        const number=req.body.number;
+        const number=Number(req.body.number);
         const area=req.body.area;
         const city=req.body.city;
         const doctor_id=req.body.doctor_id;
         const chemist_id=req.body.chemist_id;
         
 
-        const sqlInsert="INSERT INTO chemist(name,email,number,area,city,doctor_id,chemist_id) VALUES (?,?,?,?,?,?)"
-        db.query(sqlInsert,[shop_name,name,email,number,area,city,doctor_id,chemist_id],(err,result)=>{
-           res.send(result);
+        const sqlInsert="INSERT INTO mr(name,email,number,area,city,doctor_id,chemist_id) VALUES (?,?,?,?,?,?,?)"
+        db.query(sqlInsert,[name,email,number,area,city,doctor_id,chemist_id],(err,result)=>{
+           if(err) console.log(err);
         })
     });
     
