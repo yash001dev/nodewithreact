@@ -211,15 +211,32 @@ app.use(bodyParser.urlencoded({extended:true}));
     //Delete Operation
     app.delete("/api/mr/delete/:mrID",(req,res)=>{
         const mrID=req.params.mrID;
-        const sqlDelete="DELETE FROM chemist where id=?";
+        const sqlDelete="DELETE FROM mr where id=?";
         db.query(sqlDelete,mrID,(err,result)=>{
             if(err) console.log(err);
         })
     })
 
-    
 
-
+    app.put('/api/mr/update',(req,res)=>{
+        
+        console.log("REQUEST BODY:",req.body);
+        const id=req.body.id;
+        const name=req.body.name;
+        const doctor_id=req.body.doctor_id;
+        const chemist_id=req.body.chemist_id;
+        const email=req.body.email;
+        const number=Number(req.body.number);
+        console.log("Number:",number);
+        const area=req.body.area;
+        const city=req.body.city;
+        
+        const sqlUpdate='UPDATE mr SET name=?,email=?,number=?,area=?,city=?,doctor_id=?,chemist_id=? WHERE id=?'
+        db.query(sqlUpdate,[name,
+        email,number,area,city,doctor_id,chemist_id,id],(err,result)=>{
+            if(err) console.log(err.message);
+        })
+    })
 
 
 app.listen(3001,()=>{
