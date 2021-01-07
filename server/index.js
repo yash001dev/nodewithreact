@@ -71,9 +71,6 @@ app.use(bodyParser.urlencoded({extended:true}));
     app.get('/api/doctor/get',(req,res)=>{
         const sqlSelect=
         "SELECT * FROM doctor";
-    
-
-
         db.query(sqlSelect,(err,result)=>{
             res.send(result);
         })
@@ -276,11 +273,29 @@ app.use(bodyParser.urlencoded({extended:true}));
         const area=req.body.area;
         const city=req.body.city;
         
-        const sqlUpdate='UPDATE mr SET name=?,email=?,number=?,area=?,city=?,doctor_id=?,chemist_id=? WHERE id=?'
+        var energy = doctor_id.join();
+        console.log("ENERGY:",energy);
+
+
+        var energy1 = chemist_id.join();
+        console.log("ENERGY:",energy1);
+
+        const sqlUpdate='UPDATE mr SET name=?,email=?,number=?,area=?,city=? WHERE id=?'
         db.query(sqlUpdate,[name,
-        email,number,area,city,doctor_id,chemist_id,id],(err,result)=>{
+        email,number,area,city,id],(err,result)=>{
             if(err) console.log(err.message);
         })
+
+        const sqlUpdate2='UPDATE mrToDoctor SET doctor_id=? WHERE mr_id=?'
+        db.query(sqlUpdate2,[energy,id],(err,result)=>{
+            if(err) console.log(err.message);
+        })
+
+        const sqlUpdate3='UPDATE mrToChemist SET chemist_id=? WHERE mr_id=?'
+        db.query(sqlUpdate3,[energy1,id],(err,result)=>{
+            if(err) console.log(err.message);
+        })
+
     })
 
 //Senior CRUD
@@ -569,7 +584,7 @@ app.put('/api/mrToDoctor/update',(req,res)=>{
 
     setTimeout(()=>{
         console.log("ID:",id);
-        const sqlInsert="Update mrToDoctor SET mr_id=? where dr_id=?"
+        const sqlInsert="Update mrToDoctor SET doctor_id=? where mr_id=?"
         db.query(sqlInsert,[energy,id],(err,result)=>{
                 if(err) console.log(err);
          });
@@ -635,7 +650,7 @@ app.put('/api/mrToChemist/update',(req,res)=>{
     const city=req.body.city;
 
     const mr_id=req.body.mr_id;
-    var energy = mr_id.join();
+    let energy = mr_id.join();
     console.log("ENERGY:",energy);
     
 
@@ -647,7 +662,7 @@ app.put('/api/mrToChemist/update',(req,res)=>{
 
     setTimeout(()=>{
         console.log("ID:",id);
-        const sqlInsert="Update mrToChemist SET mr_id=? where chemist_id=?"
+        const sqlInsert="Update mrToChemist SET chemist_id=? where mr_id=?"
         db.query(sqlInsert,[energy,id],(err,result)=>{
                 if(err) console.log(err);
          });
@@ -873,6 +888,158 @@ app.put('/api/workplace/update',(req,res)=>{
     })
 
 
+//Get Operation
+app.get('/api/mrToDoctor/get',(req,res)=>{
+    const sqlSelect=
+    "SELECT * FROM mrToDoctor";
+    console.log("chemist select is called...");
+    db.query(sqlSelect,(err,result)=>{
+        console.log("result:",result);
+        res.send(result);
+    })
+})
+
+app.get('/api/mrToDoctor/get/:mrID',(req,res)=>{
+    const id=req.params.mrID
+    console.log(id);
+    const sqlSelect=
+    "SELECT * FROM mrToDoctor where mr_id=?";
+    console.log("chemist select is called...");
+    db.query(sqlSelect,id,(err,result)=>{
+        console.log("result:",result);
+        res.send(result);
+    })
+})
+
+
+
+//Delete Operation
+app.delete("/api/mrToDoctor/delete/:chemistID",(req,res)=>{
+    const chemistID=req.params.chemistID;
+    console.log("delete is called...");
+    console.log(chemistID.toString());
+    const sqlDelete="DELETE FROM senior where id=?";
+    db.query(sqlDelete,chemistID,(err,result)=>{
+        if(err) console.log(err);
+    })
+    setTimeout(()=>{
+        const sqlDelete="DELETE FROM mrToDoctor where mr_id=?";
+        db.query(sqlDelete,chemistID,(err,result)=>{
+        if(err) console.log(err);
+    })
+  },100)
+})
+
+// Update Operation
+app.put('/api/mrToDoctor/update',(req,res)=>{
+    
+    console.log(req.body);
+    const id=req.body.id;
+    const name=req.body.name;
+    const email=req.body.email;
+    const number=Number(req.body.number);
+    console.log("Number:",number);
+    const area=req.body.area;
+    const city=req.body.city;
+
+    const mr_id=req.body.mr_id;
+    var energy = mr_id.join();
+    console.log("ENERGY:",energy);
+    
+
+    const sqlUpdate='UPDATE senior SET name=?,email=?,number=?,area=?,city=? WHERE id=?'
+    db.query(sqlUpdate,[name,
+    email,number,area,city,id],(err,result)=>{
+        if(err) console.log(err.message);
+    })
+
+    setTimeout(()=>{
+        console.log("ID:",id);
+        const sqlInsert="Update mrToDoctor SET mr_id=? where dr_id=?"
+        db.query(sqlInsert,[energy,id],(err,result)=>{
+                if(err) console.log(err);
+         });
+    },6000);
+
+})
+
+
+//MrToChemistToTask
+
+//Get Operation
+app.get('/api/mrToChemist/get',(req,res)=>{
+    const sqlSelect=
+    "SELECT * FROM mrToChemist";
+    console.log("chemist select is called...");
+    db.query(sqlSelect,(err,result)=>{
+        console.log("result:",result);
+        res.send(result);
+    })
+})
+
+app.get('/api/mrToChemist/get/:mrID',(req,res)=>{
+    const id=req.params.mrID;
+    console.log(id);
+    const sqlSelect=
+    "SELECT * FROM mrToChemist where mr_id=?";
+    console.log("chemist select is called...");
+    db.query(sqlSelect,id,(err,result)=>{
+        console.log("result:",result);
+        res.send(result);
+    })
+})
+
+
+
+//Delete Operation
+app.delete("/api/mrToChemist/delete/:chemistID",(req,res)=>{
+    const chemistID=req.params.chemistID;
+    console.log("delete is called...");
+    console.log(chemistID.toString());
+    const sqlDelete="DELETE FROM senior where id=?";
+    db.query(sqlDelete,chemistID,(err,result)=>{
+        if(err) console.log(err);
+    })
+    setTimeout(()=>{
+        const sqlDelete="DELETE FROM mrToChemist where mr_id=?";
+        db.query(sqlDelete,chemistID,(err,result)=>{
+        if(err) console.log(err);
+    })
+  },100)
+})
+
+// Update Operation
+app.put('/api/mrToChemist/update',(req,res)=>{
+    
+    console.log(req.body);
+    const id=req.body.id;
+    const name=req.body.name;
+    const email=req.body.email;
+    const number=Number(req.body.number);
+    console.log("Number:",number);
+    const area=req.body.area;
+    const city=req.body.city;
+
+    const mr_id=req.body.mr_id;
+    var energy = mr_id.join();
+    console.log("ENERGY:",energy);
+    
+
+    const sqlUpdate='UPDATE senior SET name=?,email=?,number=?,area=?,city=? WHERE id=?'
+    db.query(sqlUpdate,[name,
+    email,number,area,city,id],(err,result)=>{
+        if(err) console.log(err.message);
+    })
+
+    setTimeout(()=>{
+        console.log("ID:",id);
+        const sqlInsert="Update mrToChemist SET mr_id=? where chemist_id=?"
+        db.query(sqlInsert,[energy,id],(err,result)=>{
+                if(err) console.log(err);
+         });
+    },6000);
+
+})
 
 
 
