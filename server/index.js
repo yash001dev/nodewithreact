@@ -15,54 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
-// app.get('/api/get',(req,res)=>{
-//     const sqlSelect=
-//     "SELECT * FROM movie_reviews";
 
-//     db.query(sqlSelect,(err,result)=>{
-//         res.send(result);
-//     })
-// })
-
-// app.post("/api/insert",(req,res)=>{
-
-//     const movieName=req.body.movieName;
-//     const movieReview=req.body.movieReview;
-
-//     console.log("MovieReview:",movieReview);
-//     const sqlInsert="INSERT INTO movie_reviews (movieName,movieReview) VALUES (?,?)"
-//     db.query(sqlInsert,[movieName,movieReview],(err,result)=>{
-//         console.log(result);
-//     })
-// });
-
-// app.delete('/api/delete/:movieName',(req,res)=>{
-//     const movieName=req.params.movieName;
-//     const sqlDelete="DELETE FROM movie_reviews WHERE movieName=?";
-//     db.query(sqlDelete,movieName,(err,result)=>{
-//         if(err) console.log(err);
-//     })
-// })
-
-// app.put('/api/update',(req,res)=>{
-//     const review=req.body.movieReview
-//     const name=req.body.movieName;
-//     const sqlUpdate='UPDATE SET movie_reviews movieReview=? WHERE movieName=?'
-//     db.query(sqlUpdate,[review,name],(err,result)=>{
-
-//     })
-// })
-
-// For DEMO Purpose.
-// app.get('/',(req,res)=>{
-
-//     const sqlInsert="INSERT INTO movie_reviews (movieName,movieReview) VALUES('inception','good movie');"
-
-//     db.query(sqlInsert,(err,result)=>{
-//         res.send('hello Everyone');
-//     })
-    
-// });
 
 
 //Doctor CRUD
@@ -391,13 +344,11 @@ app.listen(3001,()=>{
     app.get('/api/doctor/get',(req,res)=>{
         const sqlSelect=
         "SELECT * FROM doctor";
-    
-
-
         db.query(sqlSelect,(err,result)=>{
             res.send(result);
         })
     })
+    
 
     //Post Operation
     app.post("/api/doctor/insert",(req,res)=>{
@@ -670,7 +621,20 @@ app.put('/api/mrToChemist/update',(req,res)=>{
 
 })
 
+//Task Get Operation
 
+// app.get('/api/task/get:mrID',(req,res)=>{
+//     const id=req.params.mrID;
+//     console.log("TASK IS CALLED....");
+//     const sqlSelect = 
+//     "SELECT * from mrToDoctor where mr_id =?"
+  
+//     db.query(sqlSelect,id,(err,result)=>{
+//         console.log("result:",result);
+//         res.send(result);
+//     })
+
+// })
 //City CRUD
 
     //Get Operation
@@ -851,11 +815,8 @@ app.put('/api/workplace/update',(req,res)=>{
         
         console.log(req.body);
         const name=req.body.holiday;
-        // const email=req.body.email;
-        // const number=req.body.number;
-        // const area=req.body.area;
-        // const holiday=req.body.holiday;
-
+        
+        
         const sqlInsert="INSERT INTO holiday(holiday_name) VALUES (?)"
         db.query(sqlInsert,name,(err,result)=>{
             console.log(err);
@@ -1041,6 +1002,101 @@ app.put('/api/mrToChemist/update',(req,res)=>{
 
 })
 
+
+//CRUD OF mrtochemisttotask and mrtodoctortotask
+
+//Get Operation
+app.get('/api/task/doctor/get',(req,res)=>{
+    console.log("holiday IS CALLED...");
+    const sqlSelect=
+    "SELECT * FROM mrToDoctorToTask";
+    db.query(sqlSelect,(err,result)=>{
+        res.send(result);
+    })
+})
+
+app.get('/api/task/chemist/get',(req,res)=>{
+    console.log("Doctor IS CALLED...");
+    const sqlSelect=
+    "SELECT * FROM mrToChemistToTask";
+    db.query(sqlSelect,(err,result)=>{
+        res.send(result);
+    })
+});
+
+    //INSERT
+    app.post("/api/task/doctor/insert",(req,res)=>{
+        
+        const task=req.body.task;
+        const variable_id=req.body.variable_id;
+        const select_mr=req.body.select_mr;
+        const doctor_name=req.body.doctor_name;
+        const data_range=req.body.data_range;
+        
+        
+        // const name=req.body.worktype;
+        // const email=req.body.email;
+        // const number=req.body.number;
+        // const area=req.body.area;
+        // const worktype=req.body.worktype;
+
+        const sqlInsert="INSERT INTO mrtoDoctortotask(mr_id,doctor_id,task,date_range) VALUES (?,?,?,?)"
+        db.query(sqlInsert,[select_mr,doctor_name,task,data_range],(err,result)=>{
+            console.log(err);
+        })
+        
+        
+    });
+
+    app.post("/api/task/chemist/insert",(req,res)=>{
+        
+        const task=req.body.task;
+        const variable_id=req.body.variable_id;
+        const select_mr=req.body.select_mr;
+        const doctor_name=req.body.doctor_name;
+        const data_range=req.body.data_range;
+        
+        
+        // const name=req.body.worktype;
+        // const email=req.body.email;
+        // const number=req.body.number;
+        // const area=req.body.area;
+        // const worktype=req.body.worktype;
+
+        const sqlInsert="INSERT INTO mrtoChemisttotask(mr_id,chemist_id,task,date_range) VALUES (?,?,?,?)"
+        db.query(sqlInsert,[select_mr,doctor_name,task,data_range],(err,result)=>{
+            console.log(err);
+        })
+    });
+
+    //Delete Operation
+    app.delete("/api/task/chemist/delete",(req,res)=>{
+        const chemist_ID=req.body.chemist_id;
+        const select_mr=req.body.select_mr;
+
+        console.log("delete is called...");
+        console.log(chemist_ID);
+        const sqlDelete="DELETE FROM mrtoChemisttotask where mr_id=? and chemist_id=?";
+        db.query(sqlDelete,[select_mr,chemist_ID],(err,result)=>{
+            if(err) console.log(err);
+        })
+    })
+
+    //Delete 2 Operation
+    app.delete("/api/task/doctor/delete",(req,res)=>{
+        const doctor_ID=req.body.doctor_id;
+        const select_mr=req.body.select_mr;
+
+        console.log("delete is called...");
+        console.log(doctor_ID);
+        const sqlDelete="DELETE FROM mrtoDoctortotask where mr_id=? and doctor_id=?";
+        db.query(sqlDelete,[select_mr,doctor_ID],(err,result)=>{
+            if(err) console.log(err);
+        })
+    })
+
+
+    
 
 
 
